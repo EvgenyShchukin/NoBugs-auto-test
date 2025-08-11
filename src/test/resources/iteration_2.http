@@ -1,0 +1,408 @@
+### Предварительно: Создаем тестового пользователя для работы с ним
+POST http://localhost:4111/api/v1/admin/users
+accept: */*
+Authorization: Basic YWRtaW46YWRtaW4=
+Content-Type: application/json
+
+{
+  "username": "testItr2",
+  "password": "!QAZ2wsx",
+  "role": "USER"
+}
+
+### Предварительно: Создаем у тестового пользователя новый счет
+### Выполнить 2 раза
+POST http://localhost:4111/api/v1/accounts
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{}
+
+### Positive test: Успешное зачисление денег суммой без дробной части пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{  "id": 1,
+  "balance": 100
+}
+
+### Positive test: Успешное зачисление денег суммой с дробной части пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": 111.11
+}
+
+### Positive test: Успешное зачисление денег минимальной суммой пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": 0.01
+}
+
+### Positive test: Успешное зачисление денег максималььной суммой пользователем на счет
+//Взял за пример 1 триллион, нужно уточнить требования
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": 1000000000000
+}
+
+### Negative test: Ошибка зачисление денег суммой равной 0 пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": 0
+}
+
+### Negative test: Ошибка зачисление денег суммой равной null пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": null
+}
+
+### Negative test: Ошибка зачисление денег суммой равной пустому полю пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": ""
+}
+
+### Negative test: Ошибка зачисление денег отрицательной суммой пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 1,
+  "balance": -1
+}
+
+### Negative test: Ошибка зачисление денег пользователем на несуществующий счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": 44,
+  "balance": 234
+}
+
+### Negative test: Ошибка зачисление денег пользователем на счет null
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": null,
+  "balance": 234
+}
+
+### Negative test: Ошибка зачисление денег пользователем на счет пустая строка
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "id": "",
+  "balance": 234
+}
+
+### Positive test: Успешный перевод денег суммой без дробной части пользователем на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": 50
+}
+
+### Positive test: Успешный перевод денег суммой с дробной части пользователем на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": 55.77
+}
+
+### Positive test: Успешный перевод денег минимальной суммой пользователем на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": 55.77
+}
+
+### Positive test: Успешный перевод всех денег пользователем со счета на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 161.54000000000002
+}
+
+### Positive test: Успешный перевод денег максимальной суммы пользователем на другой счет
+//Взял за пример 1 триллион, нужно уточнить требования
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": 1000000000000.00
+}
+
+### Negative test: Ошибка перевода денег пользователем с несуществующего счета на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 33,
+  "receiverAccountId": 2,
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем со счета на несуществующий счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 35,
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем со счета null
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": null,
+  "receiverAccountId": 2,
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем на счет null
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": null,
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем со счета пустая строка
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": "",
+  "receiverAccountId": 2,
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем на счет пустая строка
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": "",
+  "amount": 77
+}
+
+### Negative test: Ошибка перевода денег пользователем суммой равной 0
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": 0
+}
+
+### Negative test: Ошибка перевода денег пользователем с отрицательной суммой
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": -2
+}
+
+### Negative test: Ошибка перевода денег пользователем суммой null
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": null
+}
+
+### Negative test: Ошибка перевода денег пользователем суммой пустая строка
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 1,
+  "receiverAccountId": 2,
+  "amount": ""
+}
+
+### Positive test: Успешное изменение имени пользователем латинскими буквами
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "testIteration2"
+}
+
+### Positive test: Успешное изменение имени пользователем на минимальную длину
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "t"
+}
+
+### Positive test: Успешное изменение имени пользователем на максимальную длину
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO",
+}
+
+### Positive test: Успешное изменение имени пользователем русским буквами
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "Сергей"
+}
+
+### Positive test: Ошибка изменения имени пользователем содержащим null
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": null
+}
+
+### Positive test: Ошибка изменения имени пользователем содержащим пустую строку
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": ""
+}
+
+### Negative test: Ошибка изменения имени пользователем содержащим цифры
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "Сергей1234567890"
+}
+
+### Negative test: Ошибка изменения имени пользователем содержащим спецсимволы
+//Уточнить требования к Имени пользователя
+PUT http://localhost:4111/api/v1/customer/profile
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "name": "Сергей!@#$%^&*()_=+"
+}
