@@ -29,6 +29,16 @@ Content-Type: application/json
   "balance": 100
 }
 
+### Positive test: Успешное зачисление денег суммой 5000 пользователем на счет
+POST http://localhost:4111/api/v1/accounts/deposit
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{  "id": 1,
+  "balance": 5000
+}
+
 ### Positive test: Успешное зачисление денег суммой с дробной части пользователем на счет
 POST http://localhost:4111/api/v1/accounts/deposit
 accept: */*
@@ -198,6 +208,31 @@ Content-Type: application/json
 {
   "senderAccountId": 1,
   "receiverAccountId": 2,
+  "amount": 1000000000000.00
+}
+
+### Positive test: Успешный перевод денег суммой 10000 пользователем на другой счет
+//Взял за пример 1 триллион, нужно уточнить требования
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
+  "amount": 10000
+}
+
+### Negative test: Ошибка перевода денег пользователем суммы, превышающий лимит на счете (недостаточно средств) на другой счет
+POST http://localhost:4111/api/v1/accounts/transfer
+accept: */*
+Authorization: Basic dGVzdEl0cjI6IVFBWjJ3c3g=
+Content-Type: application/json
+
+{
+  "senderAccountId": 2,
+  "receiverAccountId": 1,
   "amount": 1000000000000.00
 }
 
